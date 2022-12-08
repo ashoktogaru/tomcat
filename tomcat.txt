@@ -1,0 +1,222 @@
+Agenda :
+
+/var/www/html/ ---- document root
+
+Download, Install & Configure :
+
+- Application Servers :
+
+- Apache Tomcat
+
+- OS : Linux : Ubuntu : 22.04
+
+
+
+Type Of Installation :
+
+
+Binary :
+
+
+STEP-1 : Go to Apache Tomcat :
+
+- Documentation
+
+- Downloads :
+
+- Hardware
+
+- Software : java
+
+- Process
+
+
+STEP-2 : Launch a Linux Machine
+
+
+STEP-3 : Utility Softwares : git curl wget unzip tree
+
+
+STEP-4 : Software : Java
+
+
+STEP-5 : Enable Tomcat Pages across Global
+
+
+STEP-6 : User, Password, Permissions
+
+
+STEP-7 : Access Tomcat & Deploy Java Applicatio
+
+
+
+#!/bin/bash
+
+# Setup Hostname 
+sudo hostnamectl set-hostname "dev.cloudbinary.io"
+
+# Update the hostname part of Host File
+echo "`hostname -I | awk '{ print $1 }'` `hostname`" >> /etc/hosts 
+
+# Update Ubuntu Repository 
+apt update 
+
+# Download, & Install Utility Softwares 
+apt install git wget unzip curl tree -y 
+
+# Download, Install Java 11
+sudo apt-get install openjdk-11-jdk -y
+
+# Backup the Environment File
+sudo cp -pvr /etc/environment "/etc/environment_$(date +%F_%R)"
+
+# Create Environment Variables 
+echo "JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/" >> /etc/environment
+
+# Compile the Configuration 
+source /etc/environment
+
+# Go to /opt directory to download Apache Tomcat 
+cd /opt/
+
+# Download Apache Tomcat - Application
+sudo wget https://downloads.apache.org/tomcat/tomcat-8/v8.5.84/bin/apache-tomcat-8.5.84.tar.gz
+
+# Extract the Tomcat File
+sudo tar xvzf apache-tomcat-8.5.84.tar.gz
+
+# Rename the Tomcat Folder
+sudo mv apache-tomcat-8.5.84 tomcat
+
+# Go Inside the Tomcat Folder
+cd /opt/tomcat/
+
+cd bin/
+
+ls
+
+ps -aux | grep tomcat
+
+./startup.sh
+-------------------------------------------
+ps -aux | grep tomcat
+
+cd ../
+
+ls -lrt
+
+sudo su
+
+cd webapps/
+
+ls -lrt
+
+ls -lrt manager/META-INF/
+
+ls -lrt host-manager/META-INF/
+
+vim manager/META-INF/context.xml
+
+:se nu
+
+add |.*
+
+:wq
+
+vim host-manager/META-INF/context.xml
+
+:se nu
+
+add |.*
+--------------------------------
+:wq
+
+cd ../
+
+pwd
+
+ls -lrt
+
+cd config/
+
+ls -lrt
+
+ls -lrt tomcat-users.xml
+
+
+# Take Tomcat Configuration as backup 
+sudo cp -pvr /opt/tomcat/conf/tomcat-users.xml "/opt/tomcat/conf/tomcat-users.xml_$(date +%F_%R)"
+
+ls -lrt tomcat-users.xml*
+
+wc tomcat-users.xml
+
+vi tom-users.xml
+ press i 
+
+ :se nu
+
+ :1 -----go the first line
+
+ shift+g -----go the last line
+
+:55
+ enter
+ 
+#Add User & Attach Roles to Tomcat 
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<role rolename="manager-jmx"/>
+<role rolename="manager-status"/>
+<role rolename="admin-gui"/>
+<role rolename="admin-script"/>
+<user username="admin" password="redhat@123" roles="manager-gui,manager-script,manager-jmx,manager-status,admin-gui,admin-script"/>
+
+after saving in instance go to the tomcat server and check once
+
+
+# Start Tomcat Server
+cd /opt/tomcat/bin/
+
+./startup.sh
+
+---------------------------------------------------
+
+cd /opt/tomcat
+
+git clone 
+
+ls -lrt
+
+cp -pvr webapp-jmaven-java/ webapps/
+
+rm -rf webapp-jmaven-java
+
+cd webapps
+
+ls -lrt
+
+cd webapp-jmaven-java/
+
+
+# To Restart SSM Agent on Ubuntu 
+sudo 
+ snap.amazon-ssm-agent.amazon-ssm-agent.service
+
+# Attach Instance profile To EC2 Instance 
+# aws ec2 associate-iam-instance-profile --iam-instance-profile Name=SA-EC2-SSM --instance-id ""
+
+
+# Verify:
+# http://192.168.29.56:8080
+
+# vi /opt/tomcat/webapps/host-manager/META-INF/context.xml
+
+# grep -H -n "|.*" webapps/host-manager/META-INF/context.xml
+# webapps/host-manager/META-INF/context.xml:20:         allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|.*" />
+
+# vi /opt/tomcat/webapps/manager/META-INF/context.xml
+
+# grep -H -n "|.*" webapps/manager/META-INF/context.xml
+# webapps/manager/META-INF/context.xml:20:         allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|.*" />
+
